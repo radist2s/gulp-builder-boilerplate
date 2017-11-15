@@ -4,6 +4,7 @@ var defaults = require('lodash.defaults')
 var runSequence = require('run-sequence')
 
 var resolvePath = require('../lib').resolvePath
+var mkdirp = require('../lib').mkdirp
 var bundleCaption = require('../lib').getBundleCaption(__dirname)
 
 var spritesBuildTasks = []
@@ -70,7 +71,7 @@ gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'],
     var svgSprite = require('gulp-svg-sprites'),
         rename = require('gulp-rename')
 
-    var outStyleFile = svgSpritesConf.outStyleFile,
+    var outStyleFile = svgSpritesConf.outStyleFile.sprite,
         styleFileFormat = path.extname(outStyleFile).replace(/^\./, '')
 
     var styleFileExtName = styleFileFormat === 'css' ? 'css' : 'scss'
@@ -106,6 +107,131 @@ gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'],
         }))
         .pipe(gulp.dest(svgBuildDir))
 })
+
+gulp.task('svg-combiner-symbols', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'], function () {
+    var svgSourceDir = resolvePath(svgSpritesConf.sourceDir)
+    var svgBuildDir = resolvePath(svgSpritesConf.buildDir)
+
+    var svgSprite = require('gulp-svg-sprites')
+
+    var templates = {
+        previewSymbols: require('fs').readFileSync(resolvePath('svg-symbols-json.template', __dirname), 'utf-8')
+    }
+
+    return gulp.src(path.join(svgSourceDir, '**/*.svg'))
+        .pipe(svgSprite({
+            baseSize: 16,
+            padding: 0,
+            selector: svgSpritesConf.selector,
+            templates: templates,
+            mode: 'symbols',
+            svg: {
+                symbols: svgSpritesConf.symbolFileName
+            },
+            preview: {
+                symbols: getSymbolsJSONFileName()
+            }
+        }))
+        .pipe(gulp.dest(svgBuildDir))
+})
+
+gulp.task('svg-symbolizer', 'Combine SVG sprites to single file and write PHP and LESS files helpers' + bundleCaption, ['svg-combiner-symbols'], function () {
+    prepareSymbolsJsonToPhpHelper()
+    prepareSymbolsJsonToLessHelper()
+})
+
+function getSymbolsJSONFileName() {
+    return path.basename(svgSpritesConf.symbolFileName, path.extname(svgSpritesConf.symbolFileName)) + '.json'
+}
+
+function prepareSymbolsJsonToPhpHelper() {
+    var fs = require('fs')
+    var svgBuildDir = resolvePath(svgSpritesConf.buildDir),
+        symbolsBaseUrl = svgSpritesConf.symbolsBaseUrl.replace(/%f/, svgSpritesConf.symbolFileName)
+
+    var phpTemplate = fs.readFileSync(resolvePath('svg-symbols-template.php', __dirname), 'utf-8'),
+        symbolsList = JSON.parse(fs.readFileSync(path.join(svgBuildDir, getSymbolsJSONFileName()), 'utf-8'))
+
+    var symbolsListPHP = Object.keys(symbolsList).reduce(function (resultPhp, symbolName) {
+        var symbolData = symbolsList[symbolName]
+
+        var symbolNamePhp = symbolName.replace(/[-\s]+/g, '_', symbolName).toUpperCase()
+
+        var symbolDataPhp = [
+            `'width' => ${symbolData.width}`,
+            `'height' => ${symbolData.height}`,
+            `'viewBox' => '${symbolData.viewBox}'`,
+            `'originName' => '${symbolName}'`
+        ]
+
+        resultPhp[symbolNamePhp] = symbolDataPhp.join(', ')
+
+        return resultPhp
+    }, {})
+
+    var REPLACING_IMAGES_LIST = Object.keys(symbolsListPHP).reduce(function (list, varName) {
+        list.push(`'${varName}' => [${symbolsListPHP[varName]}]`)
+
+        return list
+    }, [])
+
+    phpTemplate = phpTemplate.replace(/REPLACING_IMAGES_LIST/, REPLACING_IMAGES_LIST.join(',\n\t\t\t'))
+
+    phpTemplate = phpTemplate.replace(/\[REPLACING_BASE_URL\]/, symbolsBaseUrl)
+
+    var phpTemplateRows = phpTemplate.split('\n')
+
+    var propertiesListRegexp = /(@property[\s\S]+)\s+\[ADDING_PROPERTIES_LIST_BELOW\][\s\S]*/
+
+    for (var row = 0, rows = phpTemplateRows.length; row < rows; row++) {
+        if (!propertiesListRegexp.test(phpTemplateRows[row])) {
+            continue
+        }
+
+        var propertyRowTemplate = phpTemplateRows[row].replace(propertiesListRegexp, '$1')
+
+        phpTemplateRows.splice(row, 1)
+
+        Object.keys(symbolsListPHP).forEach(function (property) {
+            phpTemplateRows.splice(row, 0, `${propertyRowTemplate} $${property}`)
+        })
+
+        phpTemplate = phpTemplateRows.join("\n")
+
+        break
+    }
+
+    var phpFileName = path.basename(svgSpritesConf.symbolFileName, path.extname(svgSpritesConf.symbolFileName)) + '.php'
+
+    mkdirp(svgBuildDir)
+
+    fs.writeFileSync(path.join(svgBuildDir, phpFileName), phpTemplate)
+}
+
+function prepareSymbolsJsonToLessHelper() {
+    var fs = require('fs')
+    var svgBuildDir = resolvePath(svgSpritesConf.buildDir),
+        outStyleFile = resolvePath(svgSpritesConf.outStyleFile.symbols)
+
+    var lessTemplate = fs.readFileSync(resolvePath('svg-symbols-template.less', __dirname), 'utf-8').trim(),
+        symbolsList = JSON.parse(fs.readFileSync(path.join(svgBuildDir, getSymbolsJSONFileName()), 'utf-8'))
+
+    var symbolsListLess = Object.keys(symbolsList).reduce(function (list, varName) {
+        var symbol = symbolsList[varName]
+
+        list.push(`@${varName}-width: ${symbol.width}px;`)
+        list.push(`@${varName}-height: ${symbol.height}px;`)
+        list.push(`@${varName}: 0 0 0 0 ${symbol.width}px ${symbol.height}px 0 0 '${varName}' '${varName}';`)
+
+        return list
+    }, [])
+
+    symbolsListLess = symbolsListLess.join('\n')
+
+    mkdirp(path.dirname(outStyleFile))
+
+    fs.writeFileSync(outStyleFile, `${lessTemplate}\n${symbolsListLess}`)
+}
 
 /**
  * @param spritesPath

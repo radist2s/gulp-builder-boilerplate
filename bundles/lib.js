@@ -59,8 +59,27 @@ function globsResolvePath(globs, basePath) {
     return globs
 }
 
+function mkdirp(targetDir) {
+    var fs = require('fs')
+    var path = require('path')
+    var sep = path.sep
+
+    var initDir = path.isAbsolute(targetDir) ? sep : ''
+
+    targetDir.split(sep).reduce((parentDir, childDir) => {
+        var curDir = path.resolve(parentDir, childDir)
+
+        if (!fs.existsSync(curDir)) {
+            fs.mkdirSync(curDir)
+        }
+
+        return curDir;
+    }, initDir)
+}
+
 module.exports.resolvePath = resolvePath
 module.exports.pathWildeCard = pathWildeCard
 module.exports.getPackageRelPath = getPackageRelPath
 module.exports.getBundleCaption = getBundleCaption
 module.exports.globsResolvePath = globsResolvePath
+module.exports.mkdirp = mkdirp

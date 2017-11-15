@@ -24,12 +24,17 @@
     "svgSprites": {
       "sourceDir": "../../static/img/svg",
 
-      "outStyleFile": "../../static/less/parts/sprites/svg-sprite.less",
+      "outStyleFile": {
+        "sprite": "../../static/less/parts/sprites/svg-sprite.less",
+        "symbols": "../../static/less/parts/sprites/svg-symbols.less"
+      },
 
       "buildDir": "../../static/img/build/sprites",
       "styleSvgPath": "../img/build/sprites/%f",
+      "symbolsBaseUrl": "static/img/build/sprites/%f",
 
       "spriteFileName": "sprite.svg",
+      "symbolFileName": "symbols.svg",
       "selector": "icon-%f"
     }
   },

@@ -1,0 +1,25 @@
+.symbol-width(@sprite) {
+    width: extract(@sprite, 5);
+}
+
+.symbol-height(@sprite) {
+    height: extract(@sprite, 6);
+}
+
+.svg-symbol-width-em(@sprite, @root-font-size) {
+    width: unit(extract(@sprite, 5) / @root-font-size, em);
+}
+
+.svg-symbol-height-em(@sprite, @root-font-size) {
+    height: unit(extract(@sprite, 6) / @root-font-size, em);
+}
+
+.svg-symbol(@sprite) {
+    .symbol-width(@sprite);
+    .symbol-height(@sprite);
+}
+
+.svg-symbol-em(@sprite, @root-font-size: @font-size-base) {
+    .svg-symbol-width-em(@sprite, @root-font-size);
+    .svg-symbol-height-em(@sprite, @root-font-size);
+}

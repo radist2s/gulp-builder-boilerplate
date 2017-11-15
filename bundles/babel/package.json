@@ -1,0 +1,38 @@
+{
+  "name": "boilerplate-gulpfile-babel",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "gulptasks-babel.js",
+  "config": {
+    "compileGlobs": [
+      "../../static/js/app-src/**/*.js"
+    ],
+    "outBaseDir": "../../static/js/app",
+    "presetsResolve": true,
+    "babel": {
+      "presets": [
+        ["env", {
+          "debug": false,
+          "useBuiltIns": false,
+          "targets": {
+            "browsers": "last 2 versions, ie 9"  
+          }
+        }]
+      ]
+    }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-flow": "^6.23.0",
+    "gulp-babel": "^7.0.0"
+  }
+}

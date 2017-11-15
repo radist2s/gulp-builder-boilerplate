@@ -1,0 +1,29 @@
+{
+  "name": "boilerplate-gulpfile-less",
+  "config": {
+    "localInstallation": false,
+    "less": {
+      "compileGlobs": ["../../static/less/*.less"],
+      "watchGlobs": ["../../static/less/**/*.less"],
+      "cssOutDir": "../../static/css"
+    }
+  },
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "gulptasks-less.js",
+  "dependencies": {
+    "autoprefixer": "latest",
+    "gulp-less": "latest",
+    "gulp-livereload": "latest",
+    "gulp-postcss": "latest",
+    "gulp-clean-css": "latest",
+    "postcss-math": "latest"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

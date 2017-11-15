@@ -1,0 +1,37 @@
+{
+  "name": "boilerplate-gulpfile",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "args-parser": "latest",
+    "gulp": ">=3.6.2",
+    "gulp-cached": "latest",
+    "gulp-concat": "^2.5.2",
+    "gulp-filter": "^4.0.0",
+    "gulp-help": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-util": ">=2.2.14",
+    "lodash.defaults": "latest",
+    "node-notifier": ">=2.0.4",
+    "npm": "^5.0.0",
+    "run-sequence": "^1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "install-all": "npm i; node installer.js bundles/*",
+    "install-freezer": "npm run install-rjs && node installer.js bundles/freezer",
+    "install-image": "node installer.js bundles/image",
+    "install-less": "node installer.js bundles/less",
+    "install-babel": "node installer.js bundles/babel",
+    "install-rjs": "node installer.js bundles/rjs",
+    "install-font": "node installer.js bundles/font",
+    "install-deploy": "npm run install-freezer && node installer.js bundles/deploy",
+    "clean-posix": "rm -rf node_modules && rm -rf bundles/node_modules && rm -f package-lock.json && rm -f bundles/package-lock.json",
+    "clean-windows": "rd /s /q node_modules && rd /s /q bundles\\node_modules && del /f /q package-lock.json && del /f /q bundles\\package-lock.json",
+    "clean": "npm run clean-posix  --silent || npm run clean-windows --silent"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "boilerplate-gulpfile-deploy",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "gulptasks-deploy.js",
+  "config": {
+    "localInstallation": false,
+    "deploy": {
+      "sourceBaseDir": "../..",
+      "remotePath": "/www/wp-content/themes/boilerplate",
+      "globs": [
+        "**",
+        "!utils",
+        "!utils/**"
+      ],
+      "parallel": 5
+    }
+  },
+  "dependencies": {
+    "vinyl-ftp": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

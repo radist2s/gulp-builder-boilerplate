@@ -1,0 +1,56 @@
+{
+  "name": "boilerplate-gulpfile-image",
+  "config": {
+    "localInstallation": false,
+    "rasterSprites": {
+      "chunksMask": "**/*.png",
+      "chunksMaskRetina": "**/*2x.png",
+      "cssBuildDir": "../../static/less/parts/sprites",
+      "imgBuildDir": "../../static/img/build/sprites",
+      "imgBuildDirCss": "../img/build/sprites",
+      "outFormat": "less",
+      
+      "tasks": [
+        {
+          "sourcePath": "../../static/img/desktop/sprites/main",
+          "png8": false,
+          "jpeg": false,
+          "retina": true,
+          "spriteVarPrefix": "icon-",
+          "buildSubDir": "desktop"
+        }
+      ]
+    },
+    "svgSprites": {
+      "sourceDir": "../../static/img/svg",
+
+      "outStyleFile": "../../static/less/parts/sprites/svg-sprite.less",
+
+      "buildDir": "../../static/img/build/sprites",
+      "styleSvgPath": "../img/build/sprites/%f",
+
+      "spriteFileName": "sprite.svg",
+      "selector": "icon-%f"
+    }
+  },
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "gulptasks-image.js",
+  "dependencies": {
+    "gulp-imagemin": "*",
+    "gulp.spritesmith": ">=6.2",
+    "imagemin-pngquant": ">=4.0.0",
+    "imagemin-webp": ">=4.0.0",
+    "gulp-svg-sprites": ">=3.0",
+    "imagemin-svgo": "*",
+    "svgo-plugin-unify-ids": "*",
+    "gulp-retina-sprites-normalizer": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

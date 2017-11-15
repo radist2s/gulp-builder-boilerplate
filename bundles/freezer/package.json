@@ -1,0 +1,42 @@
+{
+  "name": "boilerplate-gulpfile-freezer",
+  "config": {
+    "localInstallation": false,
+    "freezer": {
+      "cssFiles": null,
+      "jsFiles": null,
+      "htmlFile": null,
+      "outDir": "../../_deployed",
+      "cssFreezeMapFilename": "css-freeze-map.json",
+      "jsFreezeMapFilename": "js-freeze-map.json",
+      "cssFreezeMapBaseDir": "../..",
+      "jsFreezeMapBaseDir": "../..",
+      "freezeNestingLevel": 1,
+      "cssSelectorsRemove": true,
+      "cssCleanUp": true,
+      "jsTasksDependencies": ["rjs"],
+      "cssTasksDependencies": null
+    }
+  },
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "gulptasks-freezer.js",
+  "dependencies": {
+    "gulp-css-freezer": ">=0.0.8",
+    "gulp-js-freezer": ">=0.0.4",
+    "gulp-clean-css": ">=3.2.0",
+    "vinyl-fs": ">=2.4.3",
+    "gulp-rename": "*",
+    "extend": "*",
+    "postcss": ">=6.0.1",
+    "postcss-remove-selectors": ">=2.0.0",
+    "through": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

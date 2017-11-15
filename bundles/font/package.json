@@ -1,0 +1,28 @@
+{
+  "name": "boilerplate-gulpfile-font",
+  "config": {
+    "localInstallation": false,
+    "font": {
+      "sourceDir": null,
+      "outDir": "../../static/fonts",
+      "subset": [
+        "Basic Latin", "Latin-1 Supplement",
+        "Cyrillic Russian",
+        "General Punctuation", "Currency Symbols"
+      ]
+    }
+  },
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "gulptasks-font.js",
+  "dependencies": {
+    "fontconvert-tool": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

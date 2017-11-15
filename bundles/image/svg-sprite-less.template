@@ -1,0 +1,32 @@
+.sprite-width(@sprite) {
+    width: extract(@sprite, 5);
+}
+
+.sprite-height(@sprite) {
+    height: extract(@sprite, 6);
+}
+
+.sprite-position(@sprite) {
+    @sprite-offset-x: extract(@sprite, 3);
+    @sprite-offset-y: extract(@sprite, 4);
+    background-position: @sprite-offset-x @sprite-offset-y;
+}
+
+.sprite-image(@sprite) {
+    @sprite-image: extract(@sprite, 9);
+    @sprite-image-bare: ~`"@{sprite-image}".slice(1, -1)`;
+    background-image: url(@sprite-image-bare);
+}
+
+.sprite(@sprite) {
+    .sprite-image(@sprite);
+    .sprite-position(@sprite);
+    .sprite-width(@sprite);
+    .sprite-height(@sprite);
+}
+
+<% svg.forEach(function(svgItem) { %>
+@<%=svgItem.name%>-width: <%= svgItem.width %>px;
+@<%=svgItem.name%>-height: <%= svgItem.height %>px;
+@<%=svgItem.name%>: 0 0 <%= svgItem.positionX - padding %>px <%= svgItem.positionY - padding %>px <%= svgItem.width %>px <%= svgItem.height %>px <%= swidth %>px <%= sheight %>px '<%= svgPath %>' '<%= svgItem.name %>';
+<% }) %>

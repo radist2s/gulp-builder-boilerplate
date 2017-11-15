@@ -21,10 +21,10 @@
   "devDependencies": {},
   "scripts": {
     "install-all": "npm i; node installer.js bundles/*",
+    "install-babel": "node installer.js bundles/babel",
     "install-freezer": "npm run install-rjs && node installer.js bundles/freezer",
     "install-image": "node installer.js bundles/image",
     "install-less": "node installer.js bundles/less",
-    "install-babel": "node installer.js bundles/babel",
     "install-rjs": "node installer.js bundles/rjs",
     "install-font": "node installer.js bundles/font",
     "install-deploy": "npm run install-freezer && node installer.js bundles/deploy",

@@ -21,6 +21,8 @@ require('./bundles/deploy') // Use package to configure. No overriding supports.
 
 require('./bundles/babel') // Use package to configure. No overriding supports.
 
+require('./bundles/typescript')
+
 /** Final common tasks **/
 
 const gulp = require('gulp-help')(require('gulp'), {

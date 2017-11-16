@@ -1,0 +1,20 @@
+{
+  "name": "boilerplate-gulpfile-typescript",
+  "version": "1.0.0",
+  "config": {
+    "outPath": "../../static/js/app",
+    "tsConfigPath": "../../static/ts/tsconfig.json",
+    "sourceMapSourceRoot": "../../ts/src"
+  },
+  "description": "",
+  "main": "gulptasks-typescript.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "gulp-typescript": "latest",
+    "typescript": "latest"
+  }
+}

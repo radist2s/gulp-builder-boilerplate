@@ -12,11 +12,13 @@
     "gulp-filter": "^4.0.0",
     "gulp-help": "latest",
     "gulp-sourcemaps": "latest",
+    "gulp-typescript": "^3.2.3",
     "gulp-util": ">=2.2.14",
     "lodash.defaults": "latest",
     "node-notifier": ">=2.0.4",
     "npm": "^5.0.0",
-    "run-sequence": "^1.0.2"
+    "run-sequence": "^1.0.2",
+    "typescript": "^2.6.1"
   },
   "devDependencies": {},
   "scripts": {

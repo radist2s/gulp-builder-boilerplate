@@ -23,6 +23,8 @@ require('./bundles/babel') // Use package to configure. No overriding supports.
 
 require('./bundles/typescript')
 
+require('./bundles/systemjs-builder/gulptasks-systemjs')
+
 /** Final common tasks **/
 
 const gulp = require('gulp-help')(require('gulp'), {

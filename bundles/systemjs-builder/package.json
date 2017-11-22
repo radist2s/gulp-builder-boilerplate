@@ -1,0 +1,26 @@
+{
+  "name": "systemjs-builder-gulpfile-rjs",
+  "config": {
+    "systemConfigPath": "../../static/ts/systemjs.config.js",
+    "systemBaseURL": "../../static/ts",
+    "moduleFile": "../../static/ts/boot.js",
+    "outFile": "../../static/js/boot.package.js",
+    "watchGlobs": [
+      "../../static/ts/app-js/**/*.js",
+      "../../static/ts/third-paty/**/*.js"
+    ]
+  },
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "gulptasks-systemjs.js",
+  "dependencies": {
+    "systemjs-builder": "^0.16.12"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

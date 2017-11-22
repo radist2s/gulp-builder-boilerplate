@@ -32,8 +32,17 @@ gulp.task('typescript-compile', function () {
             this.emit('end')
         })
         .js
-            .pipe(sourcemaps.write('.', {sourceRoot: packageConfig.sourceMapSourceRoot}))
+            .pipe(sourcemaps.write('.', {
+                sourceRoot: function (file) {
+                    var sourceBaseDir = packageConfig.sourceMapSourceRoot,
+                        fileOutPath = path.join(outBaseDir, file.relative)
+
+                    return path.relative(path.dirname(fileOutPath), sourceBaseDir)
+
+                }
+            }))
             .pipe(gulp.dest(outBaseDir))
+
 })
 
 gulp.task('typescript-compile-watch', 'Run Typescript watching' + bundleCaption, ['typescript-compile'], function () {

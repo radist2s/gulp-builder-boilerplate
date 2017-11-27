@@ -61,7 +61,15 @@ function createOptimizeSvgStream(svgSourceDir, additionalPlugins) {
 }
 
 gulp.task('svg-optim', 'Optimize SVG ' + bundleCaption, function () {
-    return createOptimizeSvgStream(svgSpritesConf.sourceDir)
+    var sourceDir = [].concat(svgSpritesConf.sourceDir)
+
+    var eventStream = require('event-stream')
+
+    var streams = sourceDir.map(function (sourceDir) {
+        return createOptimizeSvgStream(sourceDir)
+    })
+
+    return eventStream.concat.apply(eventStream, streams)
 })
 
 gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'], function () {
@@ -108,10 +116,33 @@ gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'],
         .pipe(gulp.dest(svgBuildDir))
 })
 
-gulp.task('svg-combiner-symbols', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'], function () {
-    var svgSourceDir = resolvePath(svgSpritesConf.sourceDir)
-    var svgBuildDir = resolvePath(svgSpritesConf.buildDir)
+function svgCombinerSymbolsPathsMap() {
+    var useBuildSubDir = false
 
+    if (svgSpritesConf.sourceDir instanceof Array) {
+        useBuildSubDir = true
+    }
+
+    var svgSourceDir = [].concat(svgSpritesConf.sourceDir)
+
+    return svgSourceDir.map(function (sourceDir) {
+        sourceDir = resolvePath(sourceDir)
+
+        var buildSubDir = useBuildSubDir ? path.basename(sourceDir) : ''
+
+        var svgBuildDir = resolvePath(path.join(svgSpritesConf.buildDir, buildSubDir))
+
+        var map = {}
+
+        map[sourceDir] = svgBuildDir
+
+        map['useBuildSubDir'] = useBuildSubDir
+
+        return map
+    })
+}
+
+function createSvgCombinerSymbolsTask(svgSourceDir, svgBuildDir) {
     var svgSprite = require('gulp-svg-sprites')
 
     var templates = {
@@ -133,21 +164,51 @@ gulp.task('svg-combiner-symbols', 'Combine SVG sprites ' + bundleCaption, ['svg-
             }
         }))
         .pipe(gulp.dest(svgBuildDir))
+}
+
+gulp.task('svg-combiner-symbols', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'], function () {
+    var svgSymbolsPathsMap = svgCombinerSymbolsPathsMap()
+
+    var eventStream = require('event-stream')
+
+    var streams = svgSymbolsPathsMap.map(function (map) {
+        var sourceDir = Object.keys(map).shift()
+
+        var buildDir = map[sourceDir]
+
+        return createSvgCombinerSymbolsTask(sourceDir, buildDir)
+    })
+
+    return eventStream.concat.apply(eventStream, streams)
 })
 
 gulp.task('svg-symbolizer', 'Combine SVG sprites to single file and write PHP and LESS files helpers' + bundleCaption, ['svg-combiner-symbols'], function () {
-    prepareSymbolsJsonToPhpHelper()
-    prepareSymbolsJsonToLessHelper()
+    var svgSymbolsPathsMap = svgCombinerSymbolsPathsMap()
+
+    svgSymbolsPathsMap.forEach(function (map) {
+        var sourceDir = Object.keys(map).shift()
+
+        var buildDir = map[sourceDir]
+
+        var symbolsBaseUrlSubDir = map.useBuildSubDir ? path.basename(buildDir) : ''
+
+        prepareSymbolsJsonToPhpHelper(buildDir, symbolsBaseUrlSubDir)
+
+        prepareSymbolsJsonToLessHelper(buildDir, symbolsBaseUrlSubDir)
+    })
 })
 
 function getSymbolsJSONFileName() {
     return path.basename(svgSpritesConf.symbolFileName, path.extname(svgSpritesConf.symbolFileName)) + '.json'
 }
 
-function prepareSymbolsJsonToPhpHelper() {
+function prepareSymbolsJsonToPhpHelper(buildDir, symbolsBaseUrlSubDir) {
+    symbolsBaseUrlSubDir = symbolsBaseUrlSubDir || ''
+
     var fs = require('fs')
-    var svgBuildDir = resolvePath(svgSpritesConf.buildDir),
-        symbolsBaseUrl = svgSpritesConf.symbolsBaseUrl.replace(/%f/, svgSpritesConf.symbolFileName)
+    var svgBuildDir = resolvePath(buildDir)
+
+    var symbolsBaseUrl = svgSpritesConf.symbolsBaseUrl.replace(/%f/, path.join(symbolsBaseUrlSubDir, svgSpritesConf.symbolFileName))
 
     var phpTemplate = fs.readFileSync(resolvePath('svg-symbols-template.php', __dirname), 'utf-8'),
         symbolsList = JSON.parse(fs.readFileSync(path.join(svgBuildDir, getSymbolsJSONFileName()), 'utf-8'))
@@ -208,10 +269,12 @@ function prepareSymbolsJsonToPhpHelper() {
     fs.writeFileSync(path.join(svgBuildDir, phpFileName), phpTemplate)
 }
 
-function prepareSymbolsJsonToLessHelper() {
+function prepareSymbolsJsonToLessHelper(buildDir, symbolsSubDir) {
     var fs = require('fs')
-    var svgBuildDir = resolvePath(svgSpritesConf.buildDir),
-        outStyleFile = resolvePath(svgSpritesConf.outStyleFile.symbols)
+    var svgBuildDir = resolvePath(buildDir),
+        outStyleFile = resolvePath(svgSpritesConf.outStyleFile.symbols).replace(/%subDir/, symbolsSubDir)
+
+    outStyleFile = path.normalize(outStyleFile)
 
     var lessTemplate = fs.readFileSync(resolvePath('svg-symbols-template.less', __dirname), 'utf-8').trim(),
         symbolsList = JSON.parse(fs.readFileSync(path.join(svgBuildDir, getSymbolsJSONFileName()), 'utf-8'))

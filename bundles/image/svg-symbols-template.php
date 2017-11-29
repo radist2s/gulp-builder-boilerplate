@@ -22,7 +22,7 @@ namespace {
 
 namespace SvgImagesNameSpace {
     /**
-     * @return null|\SvgImagesNameSpace\SvgImagesList
+     * @return null|SvgImagesList
      */
     function svgSprite()
     {

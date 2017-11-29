@@ -240,6 +240,15 @@ function prepareSymbolsJsonToPhpHelper(buildDir, symbolsBaseUrlSubDir) {
 
     phpTemplate = phpTemplate.replace(/\[REPLACING_BASE_URL\]/, symbolsBaseUrl)
 
+    if (symbolsBaseUrlSubDir) {
+        var spritesPackName = toCamelCase(symbolsBaseUrlSubDir)
+        var nameSpace = 'SvgImages' + spritesPackName
+
+        phpTemplate = phpTemplate.replace(/SvgImagesNameSpace/g, nameSpace)
+
+        phpTemplate = phpTemplate.replace(/SpritesPackFunctionName/g, spritesPackName)
+    }
+
     var phpTemplateRows = phpTemplate.split('\n')
 
     var propertiesListRegexp = /(@property[\s\S]+)\s+\[ADDING_PROPERTIES_LIST_BELOW\][\s\S]*/

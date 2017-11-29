@@ -1,8 +1,28 @@
-<?
+<?php
 
 namespace {
+    if (!function_exists('svgSprite')) :
+        /**
+         * @return null|\SvgImagesNameSpace\SvgImagesList
+         */
+        function svgSprite()
+        {
+            return \SvgImagesNameSpace\svgSprite();
+        }
+    endif;
+
     /**
-     * @return null|\SvgImages\SvgImagesList
+     * @return null|\SvgImagesNameSpace\SvgImagesList
+     */
+    function svgSpritesPackFunctionName()
+    {
+        return \SvgImagesNameSpace\svgSprite();
+    }
+}
+
+namespace SvgImagesNameSpace {
+    /**
+     * @return null|\SvgImagesNameSpace\SvgImagesList
      */
     function svgSprite()
     {
@@ -10,17 +30,15 @@ namespace {
 
         if ($svgImagesList === NULL)
         {
-            $svgImagesList = new SvgImages\SvgImagesList;
+            $svgImagesList = new SvgImagesList;
         }
 
         return $svgImagesList;
     }
-}
 
-namespace SvgImages {
     /**
      * Class SvgImagesList
-     * @package SvgImages
+     * @package SvgImagesNameSpace
      * @property SvgImageProperties [ADDING_PROPERTIES_LIST_BELOW]
      */
     class SvgImagesList
@@ -47,7 +65,7 @@ namespace SvgImages {
 
     /**
      * Class SvgImageProperties
-     * @package SvgImages
+     * @package SvgImagesNameSpace
      * @property float $width;
      * @property float $height;
      * @property string $viewBox;

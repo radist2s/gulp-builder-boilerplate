@@ -25,6 +25,25 @@ var rasterSpritesConf = defaults(
 
 var svgSpritesConf = packageConfig.svgSprites || {}
 
+var svgSymbolSpritesSVGONecessaryPlugins = [
+    {removeViewBox: false},
+    {removeTitle: false},
+    {removeDesc: false},
+    {cleanupIDs: false},
+    {removeDimensions: true},
+    {removeUselessStrokeAndFill: false},
+    function SVGOUnifyIDs() {
+        var SVGOUnifyIDs = require('svgo-plugin-unify-ids')
+
+        return {unifyIDs: SVGOUnifyIDs}
+    },
+    function SVGOConvertDimensions() {
+        var SVGOConvertDimensions = require('./svgo-plugin-convert-dimensions')
+
+        return {convertDimensions: SVGOConvertDimensions}
+    },
+    {removeDimensions: true}
+]
 
 if (rasterSpritesConf && rasterSpritesConf.tasks && rasterSpritesConf.tasks.length) {
     rasterSpritesConf.tasks.forEach(function (task) {
@@ -39,15 +58,19 @@ gulp.task('build-sprites', 'Build raster sprites ' + bundleCaption, spritesBuild
     )
 })
 
+function getSVGODefaultPlugins() {
+    return svgSymbolSpritesSVGONecessaryPlugins.map(function (plugin) {
+        if (plugin instanceof Function) {
+            return plugin()
+        }
+
+        return plugin
+    })
+}
+
 function createOptimizeSvgStream(svgSourceDir, additionalPlugins) {
     var imagemin = require('gulp-imagemin')
-    var svgoMinifyIDs = require('svgo-plugin-unify-ids')
-
-    var svgoPlugins = [
-        {removeViewBox: false},
-        {cleanupIDs: false},
-        {unifyIDs: svgoMinifyIDs}
-    ]
+    var svgoPlugins = getSVGODefaultPlugins()
 
     if (additionalPlugins) {
         svgoPlugins = svgoPlugins.concat(additionalPlugins)
@@ -106,7 +129,8 @@ gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'],
                 sprite: svgSpritesConf.spriteFileName
             },
             // mode: 'symbols',
-            preview: false
+            preview: false,
+            cleanconfig: {plugins: getSVGODefaultPlugins()}
         }))
         .pipe(rename(function (path) {
             if (styleFileFormat === 'less' && path.extname === '.scss') {
@@ -161,7 +185,8 @@ function createSvgCombinerSymbolsTask(svgSourceDir, svgBuildDir) {
             },
             preview: {
                 symbols: getSymbolsJSONFileName()
-            }
+            },
+            cleanconfig: {plugins: getSVGODefaultPlugins()}
         }))
         .pipe(gulp.dest(svgBuildDir))
 }

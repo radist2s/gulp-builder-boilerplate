@@ -30,7 +30,6 @@ var svgSymbolSpritesSVGONecessaryPlugins = [
     {removeTitle: false},
     {removeDesc: false},
     {cleanupIDs: false},
-    {removeDimensions: true},
     {removeUselessStrokeAndFill: false},
     function SVGOUnifyIDs() {
         var SVGOUnifyIDs = require('svgo-plugin-unify-ids')

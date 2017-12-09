@@ -77,9 +77,24 @@ function mkdirp(targetDir) {
     }, initDir)
 }
 
+function toCamelCase(str) {
+    // Lower cases the string
+    return str.toLowerCase()
+    // Replaces any - or _ characters with a space
+        .replace( /[-_]+/g, ' ')
+        // Removes any non alphanumeric characters
+        .replace( /[^\w\s]/g, '')
+        // Uppercases the first character in each group immediately following a space or string start
+        // (delimited by spaces)
+        .replace( /(?:\s|^)(.)/g, function($1) { return $1.toUpperCase(); })
+        // Removes spaces
+        .replace( / /g, '' );
+}
+
 module.exports.resolvePath = resolvePath
 module.exports.pathWildeCard = pathWildeCard
 module.exports.getPackageRelPath = getPackageRelPath
 module.exports.getBundleCaption = getBundleCaption
 module.exports.globsResolvePath = globsResolvePath
 module.exports.mkdirp = mkdirp
+module.exports.toCamelCase = toCamelCase

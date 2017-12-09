@@ -6,6 +6,7 @@ var runSequence = require('run-sequence')
 var resolvePath = require('../lib').resolvePath
 var mkdirp = require('../lib').mkdirp
 var bundleCaption = require('../lib').getBundleCaption(__dirname)
+var toCamelCase = require('../lib').toCamelCase
 
 var spritesBuildTasks = []
 

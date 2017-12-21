@@ -14,7 +14,7 @@
       "freezeNestingLevel": 1,
       "cssSelectorsRemove": true,
       "cssCleanUp": true,
-      "jsTasksDependencies": ["rjs"],
+      "jsTasksDependencies": ["systemjs-builder-ts"],
       "cssTasksDependencies": null
     }
   },

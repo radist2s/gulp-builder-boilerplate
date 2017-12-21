@@ -8,6 +8,8 @@ var packageConfig = require('./package').config || {}
 var resolvePath = require('../lib').resolvePath
 var globsResolvePath = require('../lib').globsResolvePath
 
+var runSequence = require('run-sequence')
+
 var systemBuilderInstance
 
 var systemBuilderOptions = {
@@ -51,4 +53,12 @@ gulp.task('systemjs-builder-watch', 'Watch for globs and run SystemJs builder ' 
     var globs = globsResolvePath(packageConfig.watchGlobs, process.cwd())
 
     gulp.watch(globs, ['systemjs-builder'])
+})
+
+gulp.task('systemjs-builder-ts', function (complete) {
+    return runSequence(
+        'typescript-compile',
+        'systemjs-builder',
+        complete
+    )
 })

@@ -14,7 +14,7 @@ require('./bundles/freezer')({ // Use package to configure or override vars here
     cssFiles: '../../static/css/*.css',
 
     // JS Freezer
-    jsFiles: '../../static/js/app/*.js'
+    jsFiles: '../../static/js/*.js'
 })
 
 require('./bundles/deploy') // Use package to configure. No overriding supports.

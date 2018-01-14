@@ -5,14 +5,14 @@
     "rasterSprites": {
       "chunksMask": "**/*.png",
       "chunksMaskRetina": "**/*2x.png",
-      "cssBuildDir": "../../static/less/parts/sprites",
-      "imgBuildDir": "../../static/img/build/sprites",
+      "cssBuildDir": "../../assets/less/parts/sprites",
+      "imgBuildDir": "../../assets/img/build/sprites",
       "imgBuildDirCss": "../img/build/sprites",
       "outFormat": "less",
       
       "tasks": [
         {
-          "sourcePath": "../../static/img/desktop/sprites/main",
+          "sourcePath": "../../assets/img/desktop/sprites/main",
           "png8": false,
           "jpeg": false,
           "retina": true,
@@ -22,16 +22,16 @@
       ]
     },
     "svgSprites": {
-      "sourceDir": ["../../static/img/svg/sprites-main"],
+      "sourceDir": ["../../assets/img/svg/sprites-main"],
 
       "outStyleFile": {
-        "sprite": "../../static/less/parts/sprites/svg-sprite.less",
-        "symbols": "../../static/less/parts/sprites/svg-symbols/%subDir/svg-symbols.less"
+        "sprite": "../../assets/less/parts/sprites/svg-sprite.less",
+        "symbols": "../../assets/less/parts/sprites/svg-symbols/%subDir/svg-symbols.less"
       },
 
-      "buildDir": "../../static/img/build/sprites/svg",
+      "buildDir": "../../assets/img/build/sprites/svg",
       "styleSvgPath": "../img/build/sprites/svg/%f",
-      "symbolsBaseUrl": "static/img/build/sprites/svg/%f",
+      "symbolsBaseUrl": "assets/img/build/sprites/svg/%f",
 
       "spriteFileName": "sprite.svg",
       "symbolFileName": "symbols.svg",

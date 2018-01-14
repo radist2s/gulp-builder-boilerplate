@@ -6,9 +6,9 @@
   "main": "gulptasks-babel.js",
   "config": {
     "compileGlobs": [
-      "../../static/js/app-src/**/*.js"
+      "../../assets/js/app-src/**/*.js"
     ],
-    "outBaseDir": "../../static/js/app",
+    "outBaseDir": "../../assets/js/app",
     "presetsResolve": true,
     "babel": {
       "presets": [

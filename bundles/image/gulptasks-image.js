@@ -18,8 +18,8 @@ var rasterSpritesConf = defaults(
     {
         chunksMask: '**/*.png',
         chunksMaskRetina: '**/*2x.png',
-        cssBuildDir: '../../static/less/parts/sprites',
-        imgBuildDir: '../../static/img/sprites-build', // eg: /sprite-one.png && /sprite-one-2x.png
+        cssBuildDir: '../../assets/less/parts/sprites',
+        imgBuildDir: '../../assets/img/sprites-build', // eg: /sprite-one.png && /sprite-one-2x.png
         imgBuildDirCss: '../img/sprites-build', // eg: /sprite-one.png && /sprite-one-2x.png
         outFormat: 'less'
     }
@@ -55,7 +55,7 @@ if (rasterSpritesConf && rasterSpritesConf.tasks && rasterSpritesConf.tasks.leng
 gulp.task('build-sprites', 'Build raster sprites ' + bundleCaption, spritesBuildTasks, function () {
     // Alternatively you can create task directly by function not by config
     return runSequence(
-        addSpritesBuildTask('../../static/img/sprites/desktop/nope', false, false, 'icon-', 'desktop')
+        addSpritesBuildTask('../../assets/img/sprites/desktop/nope', false, false, 'icon-', 'desktop')
     )
 })
 

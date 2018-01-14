@@ -3,9 +3,9 @@
   "config": {
     "localInstallation": false,
     "less": {
-      "compileGlobs": ["../../static/less/*.less"],
-      "watchGlobs": ["../../static/less/**/*.less"],
-      "cssOutDir": "../../static/css"
+      "compileGlobs": ["../../assets/less/*.less"],
+      "watchGlobs": ["../../assets/less/**/*.less"],
+      "cssOutDir": "../../assets/css"
     }
   },
   "private": true,

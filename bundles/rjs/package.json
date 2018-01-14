@@ -3,7 +3,7 @@
   "config": {
     "localInstallation": false,
     "rjs": {
-      "configFile": "../../static/js/app/build-config.js"
+      "configFile": "../../assets/js/app/build-config.js"
     }
   },
   "private": true,

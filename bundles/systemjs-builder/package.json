@@ -1,13 +1,13 @@
 {
   "name": "systemjs-builder-gulpfile-rjs",
   "config": {
-    "systemConfigPath": "../../static/ts/systemjs.config.js",
-    "systemBaseURL": "../../static/ts",
-    "moduleFile": "../../static/ts/boot.js",
-    "outFile": "../../static/js/boot.package.js",
+    "systemConfigPath": "../../assets/ts/systemjs.config.js",
+    "systemBaseURL": "../../assets/ts",
+    "moduleFile": "../../assets/ts/boot.js",
+    "outFile": "../../assets/js/boot.package.js",
     "watchGlobs": [
-      "../../static/ts/app-js/**/*.js",
-      "../../static/ts/third-paty/**/*.js"
+      "../../assets/ts/app-js/**/*.js",
+      "../../assets/ts/third-paty/**/*.js"
     ]
   },
   "private": true,

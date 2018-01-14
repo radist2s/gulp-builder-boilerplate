@@ -2,9 +2,9 @@
   "name": "boilerplate-gulpfile-typescript",
   "version": "1.0.0",
   "config": {
-    "outPath": "../../static/ts/app-js",
-    "tsConfigPath": "../../static/ts/tsconfig.json",
-    "sourceMapSourceRoot": "../../static/ts"
+    "outPath": "../../assets/ts/app-js",
+    "tsConfigPath": "../../assets/ts/tsconfig.json",
+    "sourceMapSourceRoot": "../../assets/ts"
   },
   "description": "",
   "main": "gulptasks-typescript.js",

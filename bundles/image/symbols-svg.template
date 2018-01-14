@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="0" height="0" style="position:absolute">
+    <% var defs = _.reduce(svg, function(prev, svgItem) { return prev + (svgItem.defs || '') }, ''); %>
+    <% if (defs) { %>
+    <defs>
+        <%= defs %>
+	</defs>
+	<% } %>
+		
+    <% _.forEach(svg, function(svgItem) { %>
+		<symbol id="<%= svgItem.name %>" viewBox="<%= svgItem.viewBox %>">
+			<%= svgItem.data.replace(/<svg.*?>(.*?)<\/svg>/, "$1") %>
+		</symbol>
+	<% }); %>
+</svg>

@@ -1,5 +1,6 @@
 var gulp = require('gulp-help')(require('gulp'), {hideEmpty: true})
 var path = require('path')
+var fs = require('fs')
 var defaults = require('lodash.defaults')
 var runSequence = require('run-sequence')
 
@@ -109,7 +110,7 @@ gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'],
 
     var templates = styleFileFormat === 'less' ?  {
         css: false,
-        scss: require('fs').readFileSync(resolvePath('svg-sprite-less.template', __dirname), 'utf-8')
+        scss: fs.readFileSync(resolvePath('svg-sprite-less.template', __dirname), 'utf-8')
     } : {}
 
     var outStyleFilePath = path.join(path.dirname(outStyleFile), path.basename(outStyleFile, '.' + styleFileFormat) + '.' + styleFileExtName)
@@ -166,11 +167,75 @@ function svgCombinerSymbolsPathsMap() {
     })
 }
 
+/**
+ * @param {Array} children
+ * @return {Array}
+ */
+function extractSvgSymbolsDefs(children) {
+    var defs = []
+
+    var extractingElements = [
+        'linearGradient', 'meshgradient', 'radialGradient', 'stop',
+        'clipPath'
+    ]
+
+    for (var i = 0, item; i < children.length; i++) {
+        item = children[i]
+
+        var shouldExtract = extractingElements.indexOf(item.name) !== -1,
+            removeChild = false
+
+        if (shouldExtract) {
+            defs = defs.concat(item)
+
+            removeChild = true
+        }
+        else if (item.name === 'defs') {
+            defs = defs.concat(item.children)
+
+            removeChild = true
+        }
+
+        if (removeChild) {
+            children.splice(i, 1)
+            i--
+        }
+
+        if (!shouldExtract && item.children && item.children.length) {
+            defs = defs.concat(extractSvgSymbolsDefs(item.children))
+        }
+    }
+
+    return defs
+}
+
+function svgCombinerSymbolsTransformHook(data) {
+    var XmlObject = require('svg-sprite-data/lib/xmlobject')
+
+    data.svg.forEach(function (svg) {
+        var svgXML = new XmlObject(svg.data)
+
+        var defsNodes = extractSvgSymbolsDefs(svgXML.root().childNodes())
+
+        var defs = defsNodes.reduce(function (prev, item) {
+            var xml = svgXML.toXMLString(item)
+
+            return prev + (typeof xml === 'string' ? xml : '')
+        }, '')
+
+        svg.defs = defs || ''
+        svg.data = svgXML.toXMLString(svgXML.root().value())
+    })
+
+    return data
+}
+
 function createSvgCombinerSymbolsTask(svgSourceDir, svgBuildDir) {
     var svgSprite = require('gulp-svg-sprites')
 
     var templates = {
-        previewSymbols: require('fs').readFileSync(resolvePath('svg-symbols-json.template', __dirname), 'utf-8')
+        previewSymbols: fs.readFileSync(resolvePath('svg-symbols-json.template', __dirname), 'utf-8'),
+        symbols: fs.readFileSync(resolvePath('symbols-svg.template', __dirname), 'utf-8')
     }
 
     return gulp.src(path.join(svgSourceDir, '**/*.svg'))
@@ -185,8 +250,10 @@ function createSvgCombinerSymbolsTask(svgSourceDir, svgBuildDir) {
             },
             preview: {
                 symbols: getSymbolsJSONFileName()
+                // symbols: false
             },
-            cleanconfig: {plugins: getSVGODefaultPlugins()}
+            cleanconfig: {plugins: getSVGODefaultPlugins()},
+            afterTransform: svgCombinerSymbolsTransformHook
         }))
         .pipe(gulp.dest(svgBuildDir))
 }
@@ -230,7 +297,6 @@ function getSymbolsJSONFileName() {
 function prepareSymbolsJsonToPhpHelper(buildDir, symbolsBaseUrlSubDir) {
     symbolsBaseUrlSubDir = symbolsBaseUrlSubDir || ''
 
-    var fs = require('fs')
     var svgBuildDir = resolvePath(buildDir)
 
     var symbolsBaseUrl = svgSpritesConf.symbolsBaseUrl.replace(/%f/, path.join(symbolsBaseUrlSubDir, svgSpritesConf.symbolFileName))
@@ -304,7 +370,6 @@ function prepareSymbolsJsonToPhpHelper(buildDir, symbolsBaseUrlSubDir) {
 }
 
 function prepareSymbolsJsonToLessHelper(buildDir, symbolsSubDir) {
-    var fs = require('fs')
     var svgBuildDir = resolvePath(buildDir),
         outStyleFile = resolvePath(svgSpritesConf.outStyleFile.symbols).replace(/%subDir/, symbolsSubDir)
 

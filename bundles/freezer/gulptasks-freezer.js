@@ -118,7 +118,7 @@ gulp.task('freeze-html', 'Freeze HTML file ' + bundleCaption, ['freezer'], funct
 
     var replacePath = gulp.src(htmlFreezeFile)
         .pipe(htmlLinksProcessor({
-            'assets/js/app/loader.js' : 'assets/js/app/loader-min.js'
+            'assets/dist/js/loader.js' : 'assets/js/dist/loader-min.js'
         }))
         .pipe(htmlLinksProcessor(extend(cssFreezeMap, jsFreezeMap)))
 

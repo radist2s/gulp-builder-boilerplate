@@ -8,6 +8,7 @@ var packageConfig = require('./package').config || {}
 var babelOptions = packageConfig.babel || {}
 var resolvePath = require('../lib').resolvePath
 var globsResolvePath = require('../lib').globsResolvePath
+var sourceMapRootResolve = require('../lib').sourceMapRootResolve
 var outBaseDir = packageConfig.outBaseDir ? resolvePath(packageConfig.outBaseDir) : undefined
 
 function babelConfigResolve() {
@@ -61,7 +62,9 @@ gulp.task('babel-compile', 'Transform source files with Babel pipes and exit ' +
             this.emit('end')
         })
 
-        .pipe(sourcemaps.write('.'))
+        .pipe(sourcemaps.write('.', {
+            sourceRoot: sourceMapRootResolve.bind(this, packageConfig.sourceMapSourceRoot, outBaseDir)
+        }))
 
         .pipe(gulp.dest(outBaseDir))
 })

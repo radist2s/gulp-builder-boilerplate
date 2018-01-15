@@ -4,7 +4,7 @@
     "localInstallation": false,
     "font": {
       "sourceDir": null,
-      "outDir": "../../assets/fonts",
+      "outDir": "../../assets/dist/fonts",
       "subset": [
         "Basic Latin", "Latin-1 Supplement",
         "Cyrillic Russian",

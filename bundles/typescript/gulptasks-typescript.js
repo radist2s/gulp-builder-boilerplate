@@ -6,13 +6,15 @@ var gutil = require('gulp-util')
 var bundleCaption = require('../lib').getBundleCaption(__dirname)
 var packageConfig = require('./package').config || {}
 var globsResolvePath = require('../lib').globsResolvePath
+var sourceMapRootResolve = require('../lib').sourceMapRootResolve
 
 var tsProject
 
 gulp.task('typescript-compile', function () {
     var ts = require('gulp-typescript'),
         cache = require('gulp-cached'),
-        sourcemaps = require('gulp-sourcemaps')
+        sourcemaps = require('gulp-sourcemaps'),
+        plumber = require('gulp-plumber')
 
     tsProject = tsProject || ts.createProject(packageConfig.tsConfigPath)
 
@@ -20,8 +22,9 @@ gulp.task('typescript-compile', function () {
 
     return tsProject.src()
         // .pipe(cache(outBaseDir + '-typescript')) // Filter for same files
+        .pipe(plumber())
         .pipe(sourcemaps.init())
-        .pipe(tsProject({isolatedModules: false}))
+        .pipe(tsProject())
         .on('error', function (error) {
             try {
                 notifier.notify({title: 'Typescript compilation error', message: error.message})
@@ -33,19 +36,12 @@ gulp.task('typescript-compile', function () {
         })
         .js
             .pipe(sourcemaps.write('.', {
-                sourceRoot: function (file) {
-                    var sourceBaseDir = packageConfig.sourceMapSourceRoot,
-                        fileOutPath = path.join(outBaseDir, file.relative)
-
-                    return path.relative(path.dirname(fileOutPath), sourceBaseDir)
-
-                }
+                sourceRoot: sourceMapRootResolve.bind(this, packageConfig.sourceMapSourceRoot, outBaseDir)
             }))
             .pipe(gulp.dest(outBaseDir))
-
 })
 
-gulp.task('typescript-compile-watch', 'Run Typescript watching' + bundleCaption, ['typescript-compile'], function () {
+gulp.task('typescript-compile-watch', 'Run Typescript watching ' + bundleCaption, ['typescript-compile'], function () {
     var ts = require('gulp-typescript')
 
     var tsProject = ts.createProject(packageConfig.tsConfigPath)

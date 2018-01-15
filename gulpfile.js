@@ -11,10 +11,10 @@ require('./bundles/rjs') // Use package to configure. No overriding supports.
 
 require('./bundles/freezer')({ // Use package to configure or override vars here
     // CSS Freezer
-    cssFiles: '../../assets/css/*.css',
+    // cssFiles: '../../assets/dist/css/*.css',
 
     // JS Freezer
-    jsFiles: '../../assets/js/*.js'
+    // jsFiles: '../../assets/dist/js/*.js'
 })
 
 require('./bundles/deploy') // Use package to configure. No overriding supports.

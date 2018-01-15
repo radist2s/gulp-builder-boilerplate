@@ -91,6 +91,12 @@ function toCamelCase(str) {
         .replace( / /g, '' );
 }
 
+function sourceMapRootResolve(sourceRoot, outBaseDir, file) {
+    var fileOutPath = path.join(outBaseDir, file.relative)
+
+    return path.relative(path.dirname(fileOutPath), sourceRoot)
+}
+
 module.exports.resolvePath = resolvePath
 module.exports.pathWildeCard = pathWildeCard
 module.exports.getPackageRelPath = getPackageRelPath
@@ -98,3 +104,4 @@ module.exports.getBundleCaption = getBundleCaption
 module.exports.globsResolvePath = globsResolvePath
 module.exports.mkdirp = mkdirp
 module.exports.toCamelCase = toCamelCase
+module.exports.sourceMapRootResolve = sourceMapRootResolve

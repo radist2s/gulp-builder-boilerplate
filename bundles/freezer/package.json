@@ -3,8 +3,8 @@
   "config": {
     "localInstallation": false,
     "freezer": {
-      "cssFiles": null,
-      "jsFiles": null,
+      "cssFiles": "../../assets/dist/css/*.css",
+      "jsFiles": "../../assets/dist/js/*.js",
       "htmlFile": null,
       "outDir": "../../_deployed",
       "cssFreezeMapFilename": "css-freeze-map.json",

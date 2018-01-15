@@ -13,19 +13,21 @@ var runSequence = require('run-sequence')
 var systemBuilderInstance
 
 var systemBuilderOptions = {
-    minify: false,
-    uglify: false,
-    mangle: false, // Allow the minifier to shorten non-public variable names
+    minify: packageConfig.minify,
+    mangle: packageConfig.mangle, // Allow the minifier to shorten non-public variable names
     sourceMaps: true,
     sourceMapContents: true,
-    lowResSourceMaps: false,
+    lowResSourceMaps: true,
     globalDefs: {
         DEBUG: false
     },
     globalName: 'App'
 }
 
+
 function systemBuilder() {
+    global.systemConfigDefs = Object.create(packageConfig.appConfigDefs)
+
     var Builder = require('systemjs-builder')
 
     systemBuilderInstance = systemBuilderInstance
@@ -37,9 +39,12 @@ function systemBuilder() {
 }
 
 gulp.task('systemjs-builder', 'Build SystemJs modules ' + bundleCaption, function (done) {
+    var buildMethod = !!packageConfig.buildStatic ? 'buildStatic' : 'bundle'
+
     systemBuilder()
-        .bundle(packageConfig.moduleFile, packageConfig.outFile, systemBuilderOptions)
-        .then(function () {
+        [buildMethod](packageConfig.moduleFile, packageConfig.outFile, systemBuilderOptions)
+        .then(function (result) {
+            // console.log(result.sourceMap.get())
             gutil.log(gutil.colors.green('Built successful'))
             done()
         })
@@ -55,8 +60,9 @@ gulp.task('systemjs-builder-watch', 'Watch for globs and run SystemJs builder ' 
     gulp.watch(globs, ['systemjs-builder'])
 })
 
-gulp.task('systemjs-builder-ts', function (complete) {
+gulp.task('systemjs-builder-ts-babel', 'Compile TS and JS files first and run SystemJs builder ' + bundleCaption, ['systemjs-builder'], function (complete) {
     return runSequence(
+        'babel-compile',
         'typescript-compile',
         'systemjs-builder',
         complete

@@ -22,16 +22,18 @@
       ]
     },
     "svgSprites": {
-      "sourceDir": ["../../assets/src/img/svg/sprites-main"],
+      "sourceDirSymbols": ["../../assets/src/img/svg/symbols/main"],
+      "sourceDirSprites": "../../assets/src/img/svg/sprites",
 
       "outStyleFile": {
         "sprite": "../../assets/src/less/build/sprites/svg-sprite.less",
-        "symbols": "../../assets/src/less/build/sprites/%subDir/svg-symbols.less"
+        "symbols": "../../assets/src/less/build/symbols/%subDir/svg-symbols.less"
       },
 
-      "buildDir": "../../assets/dist/img/build/sprites/svg",
+      "buildDirSprites": "../../assets/dist/img/build/sprites/svg",
+      "buildDirSymbols": "../../assets/dist/img/build/symbols/svg",
       "styleSvgPath": "../img/build/sprites/svg/%f",
-      "symbolsBaseUrl": "assets/img/build/sprites/svg/%f",
+      "symbolsBaseUrl": "assets/dist/img/build/symbols/svg/%f",
 
       "spriteFileName": "sprite.svg",
       "symbolFileName": "symbols.svg",

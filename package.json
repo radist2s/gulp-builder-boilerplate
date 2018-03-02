@@ -25,13 +25,13 @@
   "scripts": {
     "install-all": "npm i; node installer.js bundles/*",
     "install-babel": "node installer.js bundles/babel",
-    "install-freezer": "npm run install-rjs && node installer.js bundles/freezer",
+    "install-freezer": "npm run install-systemjs-builder; node installer.js bundles/freezer",
     "install-image": "node installer.js bundles/image",
     "install-less": "node installer.js bundles/less",
     "install-rjs": "node installer.js bundles/rjs",
-    "install-systemjs-builder": "node installer.js bundles/systemjs-builder",
+    "install-systemjs-builder": "npm run install-babel; node installer.js bundles/systemjs-builder",
     "install-font": "node installer.js bundles/font",
-    "install-deploy": "npm run install-freezer && node installer.js bundles/deploy",
+    "install-deploy": "npm run install-freezer; node installer.js bundles/deploy",
     "clean-posix": "rm -rf node_modules && rm -rf bundles/node_modules && rm -f package-lock.json && rm -f bundles/package-lock.json",
     "clean-windows": "rd /s /q node_modules && rd /s /q bundles\\node_modules && del /f /q package-lock.json && del /f /q bundles\\package-lock.json",
     "clean": "npm run clean-posix  --silent || npm run clean-windows --silent"

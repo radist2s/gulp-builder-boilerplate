@@ -85,7 +85,7 @@ function createOptimizeSvgStream(svgSourceDir, additionalPlugins) {
 }
 
 gulp.task('svg-optim', 'Optimize SVG ' + bundleCaption, function () {
-    var sourceDir = [].concat(svgSpritesConf.sourceDir)
+    var sourceDir = [].concat(svgSpritesConf.sourceDirSprites, svgSpritesConf.sourceDirSymbols)
 
     var eventStream = require('event-stream')
 
@@ -97,8 +97,8 @@ gulp.task('svg-optim', 'Optimize SVG ' + bundleCaption, function () {
 })
 
 gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'], function () {
-    var svgSourceDir = resolvePath(svgSpritesConf.sourceDir)
-    var svgBuildDir = resolvePath(svgSpritesConf.buildDir)
+    var svgSourceDir = resolvePath(svgSpritesConf.sourceDirSprites)
+    var svgBuildDir = resolvePath(svgSpritesConf.buildDirSprites)
 
     var svgSprite = require('gulp-svg-sprites'),
         rename = require('gulp-rename')
@@ -144,18 +144,18 @@ gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'],
 function svgCombinerSymbolsPathsMap() {
     var useBuildSubDir = false
 
-    if (svgSpritesConf.sourceDir instanceof Array) {
+    if (svgSpritesConf.sourceDirSymbols instanceof Array) {
         useBuildSubDir = true
     }
 
-    var svgSourceDir = [].concat(svgSpritesConf.sourceDir)
+    var svgSourceDir = [].concat(svgSpritesConf.sourceDirSymbols)
 
     return svgSourceDir.map(function (sourceDir) {
         sourceDir = resolvePath(sourceDir)
 
         var buildSubDir = useBuildSubDir ? path.basename(sourceDir) : ''
 
-        var svgBuildDir = resolvePath(path.join(svgSpritesConf.buildDir, buildSubDir))
+        var svgBuildDir = resolvePath(path.join(svgSpritesConf.buildDirSymbols, buildSubDir))
 
         var map = {}
 

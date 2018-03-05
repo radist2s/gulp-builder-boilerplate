@@ -18,9 +18,9 @@ var rasterSpritesConf = defaults(
     {
         chunksMask: '**/*.png',
         chunksMaskRetina: '**/*2x.png',
-        cssBuildDir: '../../assets/less/parts/sprites',
-        imgBuildDir: '../../assets/img/sprites-build', // eg: /sprite-one.png && /sprite-one-2x.png
-        imgBuildDirCss: '../img/sprites-build', // eg: /sprite-one.png && /sprite-one-2x.png
+        cssBuildDir: '../../assets/less/build/sprites-rster',
+        imgBuildDir: '../../assets/dist/img/build/sprites-raster', // eg: /sprite-one.png && /sprite-one-2x.png
+        imgBuildDirCss: '../img/build/sprites-raster', // eg: /sprite-one.png && /sprite-one-2x.png
         outFormat: 'less'
     }
 )

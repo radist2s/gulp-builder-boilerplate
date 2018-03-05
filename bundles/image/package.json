@@ -5,14 +5,14 @@
     "rasterSprites": {
       "chunksMask": "**/*.png",
       "chunksMaskRetina": "**/*2x.png",
-      "cssBuildDir": "../../assets/src/less/parts/sprites",
-      "imgBuildDir": "../../assets/dist/img/build/sprites",
-      "imgBuildDirCss": "../img/build/sprites",
+      "cssBuildDir": "../../assets/src/less/build/sprites-rster",
+      "imgBuildDir": "../../assets/dist/img/build/sprites-raster",
+      "imgBuildDirCss": "../img/build/sprites-raster",
       "outFormat": "less",
       
       "tasks": [
         {
-          "sourcePath": "../../assets/src/img/desktop/sprites/main",
+          "sourcePath": "../../assets/src/img/raster/desktop/sprites/main",
           "png8": false,
           "jpeg": false,
           "retina": true,

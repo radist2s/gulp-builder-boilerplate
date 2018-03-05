@@ -5,7 +5,7 @@
     "rasterSprites": {
       "chunksMask": "**/*.png",
       "chunksMaskRetina": "**/*2x.png",
-      "cssBuildDir": "../../assets/src/less/build/sprites-rster",
+      "cssBuildDir": "../../assets/src/less/build/sprites-raster",
       "imgBuildDir": "../../assets/dist/img/build/sprites-raster",
       "imgBuildDirCss": "../img/build/sprites-raster",
       "outFormat": "less",

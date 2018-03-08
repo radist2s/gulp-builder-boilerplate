@@ -23,16 +23,16 @@
     },
     "svgSprites": {
       "sourceDirSymbols": ["../../assets/src/img/svg/symbols/main"],
-      "sourceDirSprites": "../../assets/src/img/svg/sprites",
+      "sourceDirSprites": ["../../assets/src/img/svg/sprites/main"],
 
       "outStyleFile": {
-        "sprite": "../../assets/src/less/build/sprites/svg-sprite.less",
+        "sprite": "../../assets/src/less/build/sprites/%subDir/svg-sprite.less",
         "symbols": "../../assets/src/less/build/symbols/%subDir/svg-symbols.less"
       },
 
       "buildDirSprites": "../../assets/dist/img/build/sprites/svg",
       "buildDirSymbols": "../../assets/dist/img/build/symbols/svg",
-      "styleSvgPath": "../img/build/sprites/svg/%f",
+      "styleSvgSpritePath": "../img/build/sprites/svg/%subDir/%f",
       "symbolsBaseUrl": "assets/dist/img/build/symbols/svg/%f",
 
       "spriteFileName": "sprite.svg",

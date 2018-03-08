@@ -11,6 +11,8 @@ var toCamelCase = require('../lib').toCamelCase
 
 var spritesBuildTasks = []
 
+var subDirReplaceRegex = /%subDir/i
+
 var packageConfig = require('./package').config || {}
 
 var rasterSpritesConf = defaults(
@@ -96,40 +98,43 @@ gulp.task('svg-optim', 'Optimize SVG ' + bundleCaption, function () {
     return eventStream.concat.apply(eventStream, streams)
 })
 
-gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'], function () {
-    var svgSourceDir = resolvePath(svgSpritesConf.sourceDirSprites)
-    var svgBuildDir = resolvePath(svgSpritesConf.buildDirSprites)
-
+function createSvgCombinerSpritesTask(svgSourceDir, svgBuildDir, svgBuildSubDir) {
     var svgSprite = require('gulp-svg-sprites'),
         rename = require('gulp-rename')
 
-    var outStyleFile = svgSpritesConf.outStyleFile.sprite,
+    svgBuildSubDir = svgBuildSubDir || ''
+
+    var outStyleFile = svgSpritesConf.outStyleFile.sprite.replace(subDirReplaceRegex, svgBuildSubDir),
         styleFileFormat = path.extname(outStyleFile).replace(/^\./, '')
 
     var styleFileExtName = styleFileFormat === 'css' ? 'css' : 'scss'
+
+    var outStyleFilePath = path.join(
+        path.dirname(outStyleFile),
+        path.basename(outStyleFile, '.' + styleFileFormat) + '.' + styleFileExtName
+    )
+
+    var outStyleFilePathRelative = path.relative(svgBuildDir, outStyleFilePath)
+
+    // prepare in style svg url
+    var styleSvgSpritePath = path.join(svgSpritesConf.styleSvgSpritePath.replace(subDirReplaceRegex, svgBuildSubDir))
 
     var templates = styleFileFormat === 'less' ?  {
         css: false,
         scss: fs.readFileSync(resolvePath('svg-sprite-less.template', __dirname), 'utf-8')
     } : {}
 
-    var outStyleFilePath = path.join(path.dirname(outStyleFile), path.basename(outStyleFile, '.' + styleFileFormat) + '.' + styleFileExtName)
-
-    outStyleFilePath = path.relative(svgBuildDir, outStyleFilePath)
-
     return gulp.src(path.join(svgSourceDir, '**/*.svg'))
         .pipe(svgSprite({
             baseSize: 16,
-            cssFile: outStyleFilePath,
-            svgPath: svgSpritesConf.styleSvgPath,
+            cssFile: outStyleFilePathRelative,
+            svgPath: styleSvgSpritePath,
             selector: svgSpritesConf.selector,
             padding: 5,
             templates: templates,
             svg: {
-                // symbols: 'sprite-symbols.svg'
                 sprite: svgSpritesConf.spriteFileName
             },
-            // mode: 'symbols',
             preview: false,
             cleanconfig: {plugins: getSVGODefaultPlugins()}
         }))
@@ -139,23 +144,19 @@ gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'],
             }
         }))
         .pipe(gulp.dest(svgBuildDir))
-})
+}
 
-function svgCombinerSymbolsPathsMap() {
-    var useBuildSubDir = false
+function svgImagesPathsMap(sourceDir, buildBaseDir) {
+    var useBuildSubDir = sourceDir instanceof Array
 
-    if (svgSpritesConf.sourceDirSymbols instanceof Array) {
-        useBuildSubDir = true
-    }
-
-    var svgSourceDir = [].concat(svgSpritesConf.sourceDirSymbols)
+    var svgSourceDir = [].concat(sourceDir)
 
     return svgSourceDir.map(function (sourceDir) {
         sourceDir = resolvePath(sourceDir)
 
         var buildSubDir = useBuildSubDir ? path.basename(sourceDir) : ''
 
-        var svgBuildDir = resolvePath(path.join(svgSpritesConf.buildDirSymbols, buildSubDir))
+        var svgBuildDir = resolvePath(path.join(buildBaseDir, buildSubDir))
 
         var map = {}
 
@@ -259,7 +260,7 @@ function createSvgCombinerSymbolsTask(svgSourceDir, svgBuildDir) {
 }
 
 gulp.task('svg-combiner-symbols', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'], function () {
-    var svgSymbolsPathsMap = svgCombinerSymbolsPathsMap()
+    var svgSymbolsPathsMap = svgImagesPathsMap(svgSpritesConf.sourceDirSymbols, svgSpritesConf.buildDirSymbols)
 
     var eventStream = require('event-stream')
 
@@ -275,7 +276,7 @@ gulp.task('svg-combiner-symbols', 'Combine SVG sprites ' + bundleCaption, ['svg-
 })
 
 gulp.task('svg-symbolizer', 'Combine SVG sprites to single file and write PHP and LESS files helpers' + bundleCaption, ['svg-combiner-symbols'], function () {
-    var svgSymbolsPathsMap = svgCombinerSymbolsPathsMap()
+    var svgSymbolsPathsMap = svgImagesPathsMap(svgSpritesConf.sourceDirSymbols, svgSpritesConf.buildDirSymbols)
 
     svgSymbolsPathsMap.forEach(function (map) {
         var sourceDir = Object.keys(map).shift()
@@ -288,6 +289,22 @@ gulp.task('svg-symbolizer', 'Combine SVG sprites to single file and write PHP an
 
         prepareSymbolsJsonToLessHelper(buildDir, symbolsBaseUrlSubDir)
     })
+})
+
+gulp.task('svg-combiner', 'Combine SVG sprites ' + bundleCaption, ['svg-optim'], function () {
+    var svgSpritesPathsMap = svgImagesPathsMap(svgSpritesConf.sourceDirSprites, svgSpritesConf.buildDirSprites)
+
+    var eventStream = require('event-stream')
+
+    var streams = svgSpritesPathsMap.map(function (map) {
+        var sourceDir = Object.keys(map).shift()
+        var buildDir = map[sourceDir]
+        var buildSubDir = map.useBuildSubDir ? path.basename(buildDir) : ''
+
+        return createSvgCombinerSpritesTask(sourceDir, buildDir, buildSubDir)
+    })
+
+    return eventStream.concat.apply(eventStream, streams)
 })
 
 function getSymbolsJSONFileName() {
@@ -371,7 +388,7 @@ function prepareSymbolsJsonToPhpHelper(buildDir, symbolsBaseUrlSubDir) {
 
 function prepareSymbolsJsonToLessHelper(buildDir, symbolsSubDir) {
     var svgBuildDir = resolvePath(buildDir),
-        outStyleFile = resolvePath(svgSpritesConf.outStyleFile.symbols).replace(/%subDir/, symbolsSubDir)
+        outStyleFile = resolvePath(svgSpritesConf.outStyleFile.symbols).replace(subDirReplaceRegex, symbolsSubDir)
 
     outStyleFile = path.normalize(outStyleFile)
 

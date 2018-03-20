@@ -43,7 +43,24 @@ const COMPILE_FIRST_ARG = 'compile-first'
 gulp.task('less-watch', 'Run LESS watch with LiveReload ' + bundleCaption,
     args[COMPILE_FIRST_ARG] ? ['less'] : [],
     function () {
-        gulp.watch(lessConfig.watchGlobs, ['less-livereload'])
+        gulp.watch(lessConfig.watchGlobs, function (event) {
+            try {
+                var less = require('less')
+
+                var fileManagers = less.environment && less.environment.fileManagers || []
+
+                fileManagers.forEach(function (fileManager) {
+                    if (fileManager.contents && fileManager.contents[event.path]) {
+                        // clear the changed file cache;
+                        fileManager.contents[event.path] = null
+                    }
+                })
+            }
+            catch (e) {
+            }
+
+            gulp.start('less-livereload')
+        })
     },
     {
         options: function () {

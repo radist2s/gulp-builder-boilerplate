@@ -7,7 +7,9 @@
 	<% } %>
 		
     <% _.forEach(svg, function(svgItem) { %>
-		<symbol id="<%= svgItem.name %>" viewBox="<%= svgItem.viewBox %>">
+        <% var preserveAspectRatioAttr = svgItem.preserveAspectRatio ? 'preserveAspectRatio="' + svgItem.preserveAspectRatio + '"' : '' %>
+
+		<symbol id="<%= svgItem.name %>" viewBox="<%= svgItem.viewBox %>" <%= preserveAspectRatioAttr %>>
 			<%= svgItem.data.replace(/<svg.*?>(.*?)<\/svg>/, "$1") %>
 		</symbol>
 	<% }); %>

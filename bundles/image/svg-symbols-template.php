@@ -69,6 +69,7 @@ namespace SvgImagesNameSpace {
      * @property float $width;
      * @property float $height;
      * @property string $viewBox;
+     * @property string $preserveAspectRatio;
      * @property string $href;
      * @property string $class;
      * @property string $originName;
@@ -185,11 +186,11 @@ namespace SvgImagesNameSpace {
             return $attributesEscaped;
         }
 
-        protected function stringifyAttributes($Attributes)
+        protected function stringifyAttributes($attributes)
         {
             $attributesList = [];
 
-            foreach ($Attributes AS $property => $value)
+            foreach ($attributes AS $property => $value)
             {
                 $attributesList[] = "$property='$value'";
             }
@@ -220,7 +221,16 @@ namespace SvgImagesNameSpace {
 
         protected function renderSvg(Array $elementAttributes = [], Array $useElementAttributes = [])
         {
-            $elementAttributes = array_merge(['class' => $this->class, 'viewBox' => $this->viewBox], $elementAttributes);
+            $defaultAttributes = [
+                'class' => $this->class, 'viewBox' => $this->viewBox
+            ];
+
+            if ($this->preserveAspectRatio)
+            {
+                $defaultAttributes['preserveAspectRatio'] = $this->preserveAspectRatio;
+            }
+
+            $elementAttributes = array_merge($defaultAttributes, $elementAttributes);
 
             $attributesList = $this->stringifyAttributes($elementAttributes);
 

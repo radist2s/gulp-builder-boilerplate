@@ -216,6 +216,7 @@ function svgCombinerSymbolsTransformHook(data) {
     data.svg.forEach(function (svg) {
         var svgXML = new XmlObject(svg.data)
 
+        // Defs extract to svg data attribute for future preparing inside symbol template
         var defsNodes = extractSvgSymbolsDefs(svgXML.root().childNodes())
 
         var defs = defsNodes.reduce(function (prev, item) {
@@ -226,6 +227,10 @@ function svgCombinerSymbolsTransformHook(data) {
 
         svg.defs = defs || ''
         svg.data = svgXML.toXMLString(svgXML.root().value())
+
+
+        // Keep preserveAspectRatio attribute in svg data
+        svg.preserveAspectRatio = svgXML.root().attr('preserveAspectRatio')
     })
 
     return data
@@ -330,6 +335,7 @@ function prepareSymbolsJsonToPhpHelper(buildDir, symbolsBaseUrlSubDir) {
             `'width' => ${symbolData.width}`,
             `'height' => ${symbolData.height}`,
             `'viewBox' => '${symbolData.viewBox}'`,
+            `'preserveAspectRatio' => ${JSON.stringify(symbolData.preserveAspectRatio)}`,
             `'originName' => '${symbolName}'`
         ]
 

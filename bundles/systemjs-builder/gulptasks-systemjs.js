@@ -60,7 +60,7 @@ gulp.task('systemjs-builder-watch', 'Watch for globs and run SystemJs builder ' 
     gulp.watch(globs, ['systemjs-builder'])
 })
 
-gulp.task('systemjs-builder-ts-babel', 'Compile TS and JS files first and run SystemJs builder ' + bundleCaption, ['systemjs-builder'], function (complete) {
+gulp.task('systemjs-builder-ts-babel', 'Compile TS and JS files first and run SystemJs builder ' + bundleCaption, function (complete) {
     return runSequence(
         'babel-compile',
         'typescript-compile',

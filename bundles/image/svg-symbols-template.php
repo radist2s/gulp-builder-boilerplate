@@ -72,6 +72,7 @@ namespace SvgImagesNameSpace {
      * @property string $preserveAspectRatio;
      * @property string $href;
      * @property string $class;
+     * @property string $idPrefix;
      * @property string $originName;
      */
     class SvgImageProperties
@@ -200,7 +201,7 @@ namespace SvgImagesNameSpace {
 
         protected function createAttrHref($iconData)
         {
-            $id = '#' . $iconData['originName'];
+            $id = "#{$iconData['idPrefix']}{$iconData['originName']}";
 
             $hrefBaseUrl = static::hrefBaseUrl();
 

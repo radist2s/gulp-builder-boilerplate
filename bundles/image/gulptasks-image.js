@@ -210,7 +210,7 @@ function extractSvgSymbolsDefs(children) {
     return defs
 }
 
-function svgCombinerSymbolsTransformHook(data) {
+function svgCombinerSymbolsTransformHook(idPrefix, data) {
     var XmlObject = require('svg-sprite-data/lib/xmlobject')
 
     data.svg.forEach(function (svg) {
@@ -227,7 +227,7 @@ function svgCombinerSymbolsTransformHook(data) {
 
         svg.defs = defs || ''
         svg.data = svgXML.toXMLString(svgXML.root().value())
-
+        svg.idPrefix = idPrefix ? idPrefix + '-' : ''
 
         // Keep preserveAspectRatio attribute in svg data
         svg.preserveAspectRatio = svgXML.root().attr('preserveAspectRatio')
@@ -236,7 +236,7 @@ function svgCombinerSymbolsTransformHook(data) {
     return data
 }
 
-function createSvgCombinerSymbolsTask(svgSourceDir, svgBuildDir) {
+function createSvgCombinerSymbolsTask(svgSourceDir, svgBuildDir, symbolIdPrefix) {
     var svgSprite = require('gulp-svg-sprites')
 
     var templates = {
@@ -256,10 +256,9 @@ function createSvgCombinerSymbolsTask(svgSourceDir, svgBuildDir) {
             },
             preview: {
                 symbols: getSymbolsJSONFileName()
-                // symbols: false
             },
             cleanconfig: {plugins: getSVGODefaultPlugins()},
-            afterTransform: svgCombinerSymbolsTransformHook
+            afterTransform: svgCombinerSymbolsTransformHook.bind(this, symbolIdPrefix)
         }))
         .pipe(gulp.dest(svgBuildDir))
 }
@@ -271,10 +270,10 @@ gulp.task('svg-combiner-symbols', 'Combine SVG sprites ' + bundleCaption, ['svg-
 
     var streams = svgSymbolsPathsMap.map(function (map) {
         var sourceDir = Object.keys(map).shift()
-
         var buildDir = map[sourceDir]
+        var symbolIdPrefix = map.useBuildSubDir ? path.basename(buildDir) : ''
 
-        return createSvgCombinerSymbolsTask(sourceDir, buildDir)
+        return createSvgCombinerSymbolsTask(sourceDir, buildDir, symbolIdPrefix)
     })
 
     return eventStream.concat.apply(eventStream, streams)
@@ -336,6 +335,7 @@ function prepareSymbolsJsonToPhpHelper(buildDir, symbolsBaseUrlSubDir) {
             `'height' => ${symbolData.height}`,
             `'viewBox' => '${symbolData.viewBox}'`,
             `'preserveAspectRatio' => ${JSON.stringify(symbolData.preserveAspectRatio)}`,
+            `'idPrefix' => '${symbolData.idPrefix}'`,
             `'originName' => '${symbolName}'`
         ]
 
@@ -398,7 +398,7 @@ function prepareSymbolsJsonToLessHelper(buildDir, symbolsSubDir) {
 
     outStyleFile = path.normalize(outStyleFile)
 
-    var lessTemplate = fs.readFileSync(resolvePath('svg-symbols-template.less', __dirname), 'utf-8').trim(),
+    var lessTemplate = fs.readFileSync(resolvePath('svg-symbols-mixin-template.less', __dirname), 'utf-8').trim(),
         symbolsList = JSON.parse(fs.readFileSync(path.join(svgBuildDir, getSymbolsJSONFileName()), 'utf-8'))
 
     var symbolsListLess = Object.keys(symbolsList).reduce(function (list, varName) {
@@ -406,7 +406,8 @@ function prepareSymbolsJsonToLessHelper(buildDir, symbolsSubDir) {
 
         list.push(`@${varName}-width: ${symbol.width}px;`)
         list.push(`@${varName}-height: ${symbol.height}px;`)
-        list.push(`@${varName}: 0 0 0 0 ${symbol.width}px ${symbol.height}px 0 0 '${varName}' '${varName}';`)
+        list.push(`@${varName}: 0 0 0 0 ${symbol.width}px ${symbol.height}px 0 0 '${symbol.idPrefix}${varName}' '${symbol.idPrefix}${varName}';`)
+        list.push(`@b-${varName}: ~'.${varName}';`)
 
         return list
     }, [])

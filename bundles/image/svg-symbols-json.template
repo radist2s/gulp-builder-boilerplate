@@ -5,6 +5,7 @@ _.forEach(svg, function(svgItem) {
         height: svgItem.height,
         width: svgItem.width,
         viewBox: svgItem.viewBox,
+        idPrefix: svgItem.idPrefix,
         preserveAspectRatio: svgItem.preserveAspectRatio
     };
 });

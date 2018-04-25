@@ -97,7 +97,7 @@ function createLessStream() {
         .pipe(sourcemaps.init())
 
         // Less compilation
-        .pipe(less({ieCompat: true}))
+        .pipe(less({ieCompat: true, paths: [cssOutDir]}))
         .on('error', function (error) {
             try {
                 notifier.notify({title: 'Less compilation error', message: error.message})

@@ -161,6 +161,13 @@ namespace SvgImagesNameSpace {
             return $this;
         }
 
+        public function reset()
+        {
+            $iconData =& SvgImagesList::$imagesList[$this->name];
+
+            $iconData['class'] = $this->createAttrClass($iconData);
+        }
+
         /**
          * @param array|string $attributes ClassName or Attributes array list to escape
          * @return array
@@ -235,7 +242,11 @@ namespace SvgImagesNameSpace {
 
             $attributesList = $this->stringifyAttributes($elementAttributes);
 
-            return "<svg $attributesList>{$this->renderUse($useElementAttributes)}</svg>";
+            $svgHtml = "<svg $attributesList>{$this->renderUse($useElementAttributes)}</svg>";
+
+            $this->reset();
+
+            return $svgHtml;
         }
 
         protected function renderUse(Array $elementAttributes = [])

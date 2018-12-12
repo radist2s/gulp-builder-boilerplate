@@ -2,6 +2,7 @@
   "name": "boilerplate-gulpfile-typescript",
   "version": "1.0.0",
   "config": {
+    "localInstallation": true,
     "outPath": "../../assets/dist/js/app-build",
     "tsConfigPath": "../../assets/src/ts/tsconfig.json",
     "sourceMapSourceRoot": "../../assets/src/ts"

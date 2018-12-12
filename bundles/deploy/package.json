@@ -12,7 +12,9 @@
       "globs": [
         "**",
         "!utils",
-        "!utils/**"
+        "!utils/**",
+        "!test",
+        "!test/**"
       ],
       "parallel": 5
     }

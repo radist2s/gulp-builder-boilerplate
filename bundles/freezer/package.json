@@ -15,7 +15,7 @@
       "cssSelectorsRemove": true,
       "cssCleanUp": true,
       "jsTasksDependencies": ["systemjs-builder-ts-babel"],
-      "cssTasksDependencies": null
+      "cssTasksDependencies": ["less"]
     }
   },
   "private": true,

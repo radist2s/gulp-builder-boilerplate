@@ -6,22 +6,23 @@
   "main": "gulpfile.js",
   "dependencies": {
     "args-parser": "latest",
-    "gulp": ">=3.6.2",
     "gulp-cached": "latest",
     "gulp-concat": "^2.5.2",
     "gulp-filter": "^4.0.0",
     "gulp-help": "latest",
     "gulp-plumber": "^1.2.0",
     "gulp-sourcemaps": "latest",
-    "gulp-typescript": "^3.2.3",
     "gulp-util": ">=2.2.14",
     "lodash.defaults": "latest",
     "node-notifier": ">=2.0.4",
     "npm": "^5.0.0",
-    "run-sequence": "^1.0.2",
-    "typescript": "^2.6.1"
+    "run-sequence": "^1.0.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "browser-sync": "^2.26.3",
+    "bs-html-injector": "^3.0.3",
+    "gulp": "^3.9.1"
+  },
   "scripts": {
     "install-all": "npm i; node installer.js bundles/*",
     "install-babel": "node installer.js bundles/babel",
@@ -29,9 +30,10 @@
     "install-image": "node installer.js bundles/image",
     "install-less": "node installer.js bundles/less",
     "install-rjs": "node installer.js bundles/rjs",
-    "install-systemjs-builder": "npm run install-babel; node installer.js bundles/systemjs-builder",
+    "install-systemjs-builder": "npm run install-typescript; npm run install-babel; node installer.js bundles/systemjs-builder",
+    "install-typescript": "node installer.js bundles/typescript",
     "install-font": "node installer.js bundles/font",
-    "install-deploy": "npm run install-freezer; node installer.js bundles/deploy",
+    "install-deploy": "npm run install-less; npm run install-freezer; node installer.js bundles/deploy",
     "clean-posix": "rm -rf node_modules && rm -rf bundles/node_modules && rm -f package-lock.json && rm -f bundles/package-lock.json",
     "clean-windows": "rd /s /q node_modules && rd /s /q bundles\\node_modules && del /f /q package-lock.json && del /f /q bundles\\package-lock.json",
     "clean": "npm run clean-posix  --silent || npm run clean-windows --silent"

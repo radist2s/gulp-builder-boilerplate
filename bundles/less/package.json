@@ -15,6 +15,7 @@
   "dependencies": {
     "autoprefixer": "latest",
     "gulp-less": "latest",
+    "less-plugin-npm-import": "latest",
     "gulp-livereload": "latest",
     "gulp-postcss": "latest",
     "gulp-clean-css": "latest",

@@ -37,7 +37,7 @@
 
       "spriteFileName": "sprite.svg",
       "symbolFileName": "symbols.svg",
-      "selector": "icon-%f"
+      "selector": "symbol-%f"
     }
   },
   "private": true,
